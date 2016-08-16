@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.common.Utils;
@@ -31,11 +35,19 @@ public class WebViewActivity extends BaseActivity {
 	private String strurl = "";
 	private MyTimer mTimer;
 	private int progress = 0;
+	/**
+	 * ATTENTION: This was auto-generated to implement the App Indexing API.
+	 * See https://g.co/AppIndexing/AndroidStudio for more information.
+	 */
+	private GoogleApiClient client;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_web);
 		super.onCreate(savedInstanceState);
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 	}
 
 	@Override
@@ -111,15 +123,57 @@ public class WebViewActivity extends BaseActivity {
 		}
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		client.connect();
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"WebView Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app URL is correct.
+				Uri.parse("android-app://com.juns.wechat.view.activity/http/host/path")
+		);
+		AppIndex.AppIndexApi.start(client, viewAction);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
+		Action viewAction = Action.newAction(
+				Action.TYPE_VIEW, // TODO: choose an action type.
+				"WebView Page", // TODO: Define a title for the content shown.
+				// TODO: If you have web page content that matches this app activity's content,
+				// make sure this auto-generated web page URL is correct.
+				// Otherwise, set the URL to null.
+				Uri.parse("http://host/path"),
+				// TODO: Make sure this auto-generated app URL is correct.
+				Uri.parse("android-app://com.juns.wechat.view.activity/http/host/path")
+		);
+		AppIndex.AppIndexApi.end(client, viewAction);
+		client.disconnect();
+	}
+
+
 	private class WeiboWebViewClient extends WebViewClient {
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			return super.shouldOverrideUrlLoading(view, url);
 		}
 
+
 		@Override
 		public void onReceivedError(WebView view, int errorCode,
-				String description, String failingUrl) {
+									String description, String failingUrl) {
 			super.onReceivedError(view, errorCode, description, failingUrl);
 			mWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
 			// TODO 显示错误404
@@ -152,6 +206,8 @@ public class WebViewActivity extends BaseActivity {
 	protected void initData() {
 
 	}
+
+
 
 	/* 定义一个倒计时的内部类 */
 	private class MyTimer extends CountDownTimer {
